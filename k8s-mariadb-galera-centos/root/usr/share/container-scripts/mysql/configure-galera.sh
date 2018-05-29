@@ -40,6 +40,12 @@ done
 
 if [ "${#PEERS[@]}" = 1 ]; then
     WSREP_CLUSTER_ADDRESS=""
+    if [[ "${SAFE_TO_BOOTSTRAP_SINGLE}" == "TRUE" ]]; then
+      # Allow the cluster to start if it's been scaled down:
+      echo "Allowing bootstrap of single cluster..."
+      echo -e "[galera]\nwsrep_new_cluster">/etc/my.cnf.d/recovery.cnf
+      sed -i 's/safe_to_bootstrap: 0/safe_to_bootstrap: 1/g' /var/lib/mysql/grastate.dat
+    fi
 else
     WSREP_CLUSTER_ADDRESS=$(join , "${PEERS[@]}")
 fi

@@ -16,6 +16,7 @@ socket = /var/run/mysql/mysql.sock
 wsrep_on = ON
 wsrep_provider = /usr/lib64/galera/libgalera_smm.so
 binlog_format = ROW
+wsrep_provider_options="gcache.recover=yes; pc.recovery=TRUE"
 
 # this is only for embedded server
 [embedded]
