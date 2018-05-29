@@ -7,6 +7,18 @@
 set -e
 set -x
 
+stateout() {
+	echo "State:"
+	cat /var/lib/mysql/grastate.dat
+	echo "------"
+}
+
+cleanup() {
+    rv=$?
+    stateout
+    exit $rv
+}
+
 # Locations
 CONTAINER_SCRIPTS_DIR="/usr/share/container-scripts/mysql"
 EXTRA_DEFAULTS_FILE="/etc/my.cnf.d/galera.cnf"
@@ -32,6 +44,8 @@ if [ ! -d "/var/lib/mysql/mysql" ]; then
 	${CONTAINER_SCRIPTS_DIR}/configure-mysql.sh
 fi
 
+stateout
+trap "cleanup" INT TERM EXIT
 
 # Run mysqld
 exec mysqld
